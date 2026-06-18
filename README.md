@@ -9,18 +9,12 @@ A local-first desktop music player with smart library management, duplicate dete
 ```bash
 git clone https://github.com/sierengowskisierengowski-cpu/BAASIC.git
 cd BAASIC
+git pull   # get latest installer fixes
 chmod +x install.sh
 ./install.sh
 ```
 
-That's it. The installer will:
-
-- Install system dependencies (`yt-dlp`, `chromaprint`, `ffmpeg`, etc.)
-- Build the app
-- Install `baasic-media-player` to `~/.local/bin`
-- Add a desktop launcher with the BAASIC icon
-- Create `~/Music/BAASIC` as your download folder
-- Enable auto-import on startup (skips dupes, fingerprints unknown tracks)
+The installer auto-installs every missing dependency **one at a time** — it won't stop on the old `webkit2gtk` package. On Arch it uses `webkit2gtk-4.1`. Optional packages (like `yt-dlp`) failing won't abort the whole run.
 
 ## Download music in one command
 
@@ -79,7 +73,7 @@ baasic-media-player --import-folder ~/Music/BAASIC
 
 - Arch Linux (or similar with `pacman`)
 - `pnpm`, `rustc`, `cargo`
-- `chromaprint` (fpcalc), `ffmpeg`, `webkit2gtk`
+- `chromaprint` (fpcalc), `ffmpeg`, `webkit2gtk-4.1`
 
 ## License
 
