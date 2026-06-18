@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { convertFileSrc } from "@tauri-apps/api/core";
-import { open } from "@tauri-apps/plugin-dialog";
 import {
   Download,
   FolderOpen,
@@ -126,9 +125,9 @@ export default function App() {
   };
 
   const onImportFolder = async () => {
-    const selected = await open({ directory: true, multiple: false });
+    const selected = await api.pickFolder("Select music folder to import");
     if (!selected) return;
-    await api.importMusicFolder(selected as string);
+    await api.importMusicFolder(selected);
     await refresh();
   };
 

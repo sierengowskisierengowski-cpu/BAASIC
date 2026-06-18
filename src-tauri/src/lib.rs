@@ -251,6 +251,15 @@ fn get_default_download_dir() -> String {
     default_download_dir().to_string_lossy().to_string()
 }
 
+#[tauri::command]
+fn pick_folder(title: Option<String>) -> Option<String> {
+    let mut dialog = rfd::FileDialog::new();
+    if let Some(t) = title {
+        dialog = dialog.set_title(&t);
+    }
+    dialog.pick_folder().map(|p| p.to_string_lossy().to_string())
+}
+
 pub fn cli_import(folder: &str) -> Result<ImportResult, String> {
     let db_path = data_dir().join("library.db");
     let db = Database::open(&db_path).map_err(|e| e.to_string())?;
@@ -265,7 +274,6 @@ pub fn run() {
     let db = Database::open(&db_path).expect("failed to open database");
 
     tauri::Builder::default()
-        .plugin(tauri_plugin_dialog::init())
         .manage(AppState {
             db,
             config: Mutex::new(load_config()),
@@ -298,6 +306,7 @@ pub fn run() {
             get_acquire_tools,
             get_acquire_commands,
             get_default_download_dir,
+            pick_folder,
         ])
         .run(tauri::generate_context!())
         .expect("error while running BAASIC Media Player");

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { open } from "@tauri-apps/plugin-dialog";
 import { api } from "../lib/api";
 import type { ImportProgress } from "../types";
 
@@ -16,10 +15,10 @@ export function ImportPanel({ onDone }: { onDone: () => Promise<void> }) {
   }, []);
 
   const pickAndImport = async () => {
-    const selected = await open({ directory: true, multiple: false });
+    const selected = await api.pickFolder("Select music folder to import");
     if (!selected) return;
     setLastResult(null);
-    const result = await api.importMusicFolder(selected as string) as {
+    const result = await api.importMusicFolder(selected) as {
       imported: number;
       skipped_duplicates: number;
       tagged: number;

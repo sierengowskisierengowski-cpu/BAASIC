@@ -42,6 +42,7 @@ export const api = {
   getAcquireCommands: (query: string, mode: string, outputDir?: string) =>
     invoke<AcquireCommand[]>("get_acquire_commands", { query, mode, outputDir }),
   getDefaultDownloadDir: () => invoke<string>("get_default_download_dir"),
+  pickFolder: (title?: string) => invoke<string | null>("pick_folder", { title }),
 };
 
 export function formatDuration(ms: number): string {
