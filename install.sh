@@ -3,7 +3,7 @@
 # Installs missing deps one-by-one; never aborts the whole run on a single package failure.
 set -uo pipefail
 
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+ROOT="$(cd "$(dirname "$0")" && pwd)"
 INSTALL_BIN="${INSTALL_BIN:-$HOME/.local/bin/baasic-media-player}"
 DESKTOP_FILE="$HOME/.local/share/applications/baasic-media-player.desktop"
 ICON_DIR="$HOME/.local/share/icons/hicolor"
@@ -141,7 +141,8 @@ if [ ${#FAILED_REQUIRED[@]} -gt 0 ]; then
 fi
 
 log "→ Building BAASIC..."
-cd "$ROOT"
+cd "$ROOT" || { fail "Cannot enter project directory: $ROOT"; exit 1; }
+log "  Project: $ROOT"
 
 log "  → pnpm install..."
 if ! pnpm install >>"$LOG_FILE" 2>&1; then
