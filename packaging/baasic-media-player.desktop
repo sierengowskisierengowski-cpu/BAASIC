@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=BAASIC Media Player
+Comment=Local music library player with smart import
+Exec=/home/cosmic/Projects/baasic-media-player/src-tauri/target/release/baasic-media-player
+Icon=/home/cosmic/Projects/baasic-media-player/src-tauri/icons/256x256.png
+Terminal=false
+Categories=Audio;Music;Player;
+StartupWMClass=baasic-media-player
