@@ -174,17 +174,10 @@ if [ -f scripts/generate-icons.sh ]; then
   bash scripts/generate-icons.sh >>"$LOG_FILE" 2>&1 || warn "icon generation failed (using existing icons)"
 fi
 
-log "  → Building frontend..."
-pnpm build >>"$LOG_FILE" 2>&1 || {
-  fail "frontend build failed — see $LOG_FILE"
-  exit 1
-}
-
-log "  → Building backend (this can take a few minutes)..."
-cd src-tauri
+log "  → Building BAASIC (bundled app)..."
 export CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$ROOT/src-tauri/target}"
-if ! cargo build --release >>"$LOG_FILE" 2>&1; then
-  fail "cargo build failed — see $LOG_FILE"
+if ! pnpm tauri build >>"$LOG_FILE" 2>&1; then
+  fail "tauri build failed — see $LOG_FILE"
   tail -20 "$LOG_FILE"
   exit 1
 fi
