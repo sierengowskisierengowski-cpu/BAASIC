@@ -145,13 +145,29 @@ cd "$ROOT" || { fail "Cannot enter project directory: $ROOT"; exit 1; }
 log "  Project: $ROOT"
 
 log "  → pnpm install..."
+export CI=true
 if ! pnpm install >>"$LOG_FILE" 2>&1; then
-  pnpm install --no-frozen-lockfile >>"$LOG_FILE" 2>&1 || {
-    fail "pnpm install failed — see $LOG_FILE"
-    exit 1
-  }
+  # pnpm 11: allow esbuild builds if workspace config missing on older clones
+  if [ ! -f pnpm-workspace.yaml ]; then
+    cat > pnpm-workspace.yaml << 'YAML'
+packages:
+  - '.'
+allowBuilds:
+  esbuild: true
+YAML
+    pnpm install >>"$LOG_FILE" 2>&1 || true
+  fi
+  if ! pnpm install >>"$LOG_FILE" 2>&1; then
+    warn "pnpm install reported errors — trying approve-builds for esbuild..."
+    pnpm approve-builds esbuild >>"$LOG_FILE" 2>&1 || true
+    pnpm install >>"$LOG_FILE" 2>&1 || {
+      fail "pnpm install failed — see $LOG_FILE"
+      tail -15 "$LOG_FILE"
+      exit 1
+    }
+  fi
 fi
-pnpm approve-builds esbuild >>"$LOG_FILE" 2>&1 || true
+ok "pnpm dependencies ready"
 
 if [ -f scripts/generate-icons.sh ]; then
   log "  → Generating icons..."
